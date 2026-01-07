@@ -91,27 +91,6 @@ Reward = − (Total cumulative waiting time)
 
 ---
 
-## 📁 Project Structure
-
-```
-traffic-rl/
-│
-├── env/
-│   └── traffic_env.py
-├── agent/
-│   └── dqn.py
-├── models/
-│   └── dqn_traffic.pth
-├── results/
-│   └── wait_time_vs_density.png
-├── train.py
-├── evaluate.py
-├── requirements.txt
-└── README.md
-```
-
----
-
 ## 🏋️ Training the Model
 
 ```bash
