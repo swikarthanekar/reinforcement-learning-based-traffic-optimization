@@ -147,28 +147,9 @@ results/wait_time_vs_density.png
 
 ---
 
-## 🧰 Requirements
-
-```bash
-pip install -r requirements.txt
-```
-
-Dependencies:
-- NumPy  
-- PyTorch  
-- Matplotlib  
-
----
-
 ## 🔮 Future Improvements
 
 - Multi-intersection coordination  
 - Advanced RL algorithms (PPO, A2C)  
 - Real-time dashboards  
 
----
-
-## 👤 Author
-
-**Swikar Thanekar**  
-AI & Reinforcement Learning Project (Phase 2)
