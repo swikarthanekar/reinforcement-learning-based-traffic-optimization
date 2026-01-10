@@ -5,13 +5,10 @@ from env.traffic_env import TrafficEnv
 from agent.dqn import DQN
 import os
 
-# ---------------- Config ----------------
 STATE_DIM = 8
 ACTION_DIM = 3
 DEVICE = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 
-
-# ---------------- Fixed Timer ----------------
 def run_fixed_timer(env, switch_interval=10):
     state = env.reset()
     total_wait = 0
@@ -21,7 +18,7 @@ def run_fixed_timer(env, switch_interval=10):
         if t % switch_interval == 0:
             light_state = 1 - light_state
 
-        action = light_state  # 0 = NS, 1 = EW
+        action = light_state 
         state, reward, done, _ = env.step(action)
         total_wait += -reward
 
@@ -31,7 +28,6 @@ def run_fixed_timer(env, switch_interval=10):
     return total_wait / env.max_steps
 
 
-# ---------------- DQN Policy ----------------
 def run_dqn(env, model):
     state = env.reset()
     total_wait = 0
@@ -48,13 +44,11 @@ def run_dqn(env, model):
     return total_wait / env.max_steps
 
 
-# ---------------- Main Evaluation ----------------
 if __name__ == "__main__":
     densities = [0.1, 0.3, 0.5]
     fixed_results = []
     rl_results = []
 
-    # Resolve absolute paths (IMPORTANT)
     BASE_DIR = os.path.dirname(os.path.abspath(__file__))
     MODEL_DIR = os.path.join(BASE_DIR, "models")
     RESULTS_DIR = os.path.join(BASE_DIR, "results")
@@ -63,17 +57,15 @@ if __name__ == "__main__":
 
     model_path = os.path.join(MODEL_DIR, "dqn_traffic.pth")
 
-    # Load trained model
     model = DQN(STATE_DIM, ACTION_DIM).to(DEVICE)
     model.load_state_dict(torch.load(model_path, map_location=DEVICE))
     model.eval()
 
-    # Run evaluation
     for d in densities:
         fixed_runs = []
         rl_runs = []
 
-        for _ in range(5):  # average over multiple runs
+        for _ in range(5):
             env = TrafficEnv(arrival_rate=d)
             fixed_runs.append(run_fixed_timer(env))
 
@@ -83,7 +75,6 @@ if __name__ == "__main__":
         fixed_results.append(np.mean(fixed_runs))
         rl_results.append(np.mean(rl_runs))
 
-    # ---------------- Plot ----------------
     plot_path = os.path.join(RESULTS_DIR, "wait_time_vs_density.png")
 
     plt.figure()
