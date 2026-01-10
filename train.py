@@ -6,7 +6,6 @@ import torch.optim as optim
 from env.traffic_env import TrafficEnv
 from agent.dqn import DQN, ReplayBuffer
 
-# ---------- Hyperparameters ----------
 STATE_DIM = 8
 ACTION_DIM = 3
 LR = 1e-3
@@ -20,7 +19,6 @@ NUM_EPISODES = 300
 
 DEVICE = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 
-# ---------- Initialize ----------
 env = TrafficEnv(arrival_rate=0.3)
 policy_net = DQN(STATE_DIM, ACTION_DIM).to(DEVICE)
 target_net = DQN(STATE_DIM, ACTION_DIM).to(DEVICE)
@@ -33,14 +31,12 @@ replay_buffer = ReplayBuffer(capacity=10000)
 epsilon = EPSILON_START
 
 
-# ---------- Training Loop ----------
 for episode in range(NUM_EPISODES):
     state = env.reset()
     total_reward = 0
     done = False
 
     while not done:
-        # ε-greedy action selection
         if np.random.rand() < epsilon:
             action = np.random.randint(ACTION_DIM)
         else:
@@ -55,7 +51,6 @@ for episode in range(NUM_EPISODES):
         state = next_state
         total_reward += reward
 
-        # Train if buffer is ready
         if len(replay_buffer) >= BATCH_SIZE:
             states, actions, rewards, next_states, dones = replay_buffer.sample(BATCH_SIZE)
 
@@ -65,10 +60,8 @@ for episode in range(NUM_EPISODES):
             next_states = torch.FloatTensor(next_states).to(DEVICE)
             dones = torch.FloatTensor(dones).unsqueeze(1).to(DEVICE)
 
-            # Current Q values
             q_values = policy_net(states).gather(1, actions)
 
-            # Target Q values
             with torch.no_grad():
                 max_next_q = target_net(next_states).max(1, keepdim=True)[0]
                 target_q = rewards + GAMMA * max_next_q * (1 - dones)
@@ -79,10 +72,8 @@ for episode in range(NUM_EPISODES):
             loss.backward()
             optimizer.step()
 
-    # Decay epsilon
     epsilon = max(EPSILON_END, epsilon * EPSILON_DECAY)
 
-    # Update target network
     if episode % TARGET_UPDATE_FREQ == 0:
         target_net.load_state_dict(policy_net.state_dict())
 
@@ -92,7 +83,6 @@ for episode in range(NUM_EPISODES):
         f"Epsilon: {epsilon:.3f}"
     )
 
-# ---------- Save Model ----------
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 MODEL_DIR = os.path.join(BASE_DIR, "models")
 
