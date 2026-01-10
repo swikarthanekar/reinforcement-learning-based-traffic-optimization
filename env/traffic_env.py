@@ -3,26 +3,20 @@ import random
 
 class TrafficEnv:
     def __init__(self, max_steps=200, arrival_rate=0.3):
-        # lanes: North, South, East, West
         self.lanes = ["N", "S", "E", "W"]
         self.max_steps = max_steps
-        self.arrival_rate = arrival_rate  # traffic density
+        self.arrival_rate = arrival_rate  
         self.reset()
 
     def reset(self):
         self.step_count = 0
 
-        # number of cars in each lane
         self.cars = {lane: 0 for lane in self.lanes}
 
-        # cumulative waiting time per lane
         self.waiting_time = {lane: 0 for lane in self.lanes}
 
-        # traffic light state
-        # 0 = NS green, 1 = EW green
         self.light_state = 0
 
-        # ambulance flag
         self.ambulance_lane = None
 
         return self._get_state()
@@ -37,13 +31,11 @@ class TrafficEnv:
             self.waiting_time[lane] += self.cars[lane]
 
     def _move_cars(self):
-        # lanes allowed to move
-        if self.light_state == 0:  # NS green
+        if self.light_state == 0:  
             green_lanes = ["N", "S"]
-        else:  # EW green
+        else:  
             green_lanes = ["E", "W"]
 
-        # ambulance override
         if self.ambulance_lane:
             green_lanes = [self.ambulance_lane]
 
@@ -75,7 +67,6 @@ class TrafficEnv:
 
         self.step_count += 1
 
-        # apply action
         if action == 0:
             self.light_state = 0
         elif action == 1:
@@ -83,13 +74,11 @@ class TrafficEnv:
         elif action == 2:
             self.light_state = 1 - self.light_state
 
-        # environment dynamics
         self._maybe_spawn_ambulance()
         self._spawn_cars()
         self._move_cars()
         self._update_waiting_time()
 
-        # reward = negative total waiting time
         total_wait = sum(self.waiting_time.values())
         reward = -total_wait
 
