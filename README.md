@@ -1,5 +1,8 @@
 # 🚦 Autonomous Traffic Signal Optimization using Reinforcement Learning
 
+&quot;This project was developed during the Winter Internship &#39;25
+at console.success.&quot;
+
 An AI-based traffic signal controller that dynamically optimizes signal timings using **Deep Reinforcement Learning (DQN)**.  
 The system adapts to real-time traffic density, prioritizes emergency vehicles, and significantly reduces average waiting time compared to traditional fixed-timer traffic signals.
 
