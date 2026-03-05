@@ -23,6 +23,7 @@ class ReplayBuffer:
     def __init__(self, capacity=10000):
         self.buffer = []
         self.capacity = capacity
+        # self.capacity = capacity
 
     def push(self, state, action, reward, next_state, done):
         if len(self.buffer) >= self.capacity:
